@@ -1,0 +1,15 @@
+CREATE TABLE snippets (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    code TEXT NOT NULL,
+    language VARCHAR(50) NOT NULL,
+    visibility VARCHAR(20) DEFAULT 'PRIVATE',
+    view_count BIGINT DEFAULT 0,
+    copy_count BIGINT DEFAULT 0,
+    star_count BIGINT DEFAULT 0,
+    owner_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+);
