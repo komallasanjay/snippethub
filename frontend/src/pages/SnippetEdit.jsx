@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Loader } from '@/components/shared/Loader';
+import { Select } from '@/components/ui/Select';
 import toast from 'react-hot-toast';
+import { ArrowLeft } from 'lucide-react';
 
 export const SnippetEdit = () => {
   const { id } = useParams();
@@ -67,6 +69,12 @@ export const SnippetEdit = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      <div>
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4 -ml-3 text-muted-foreground">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
       <h1 className="text-3xl font-bold tracking-tight">Edit Snippet</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
@@ -84,11 +92,11 @@ export const SnippetEdit = () => {
           </div>
           <div className="space-y-2">
              <label className="text-sm font-medium">Visibility</label>
-             <select className="flex h-10 w-full rounded-md border border-input bg-background text-foreground px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" value={formData.visibility} onChange={e => setFormData({...formData, visibility: e.target.value})}>
+             <Select className="w-full" value={formData.visibility} onChange={e => setFormData({...formData, visibility: e.target.value})}>
                 <option value="PUBLIC" className="bg-background text-foreground">Public</option>
                 <option value="PRIVATE" className="bg-background text-foreground">Private</option>
                 <option value="UNLISTED" className="bg-background text-foreground">Unlisted</option>
-             </select>
+             </Select>
           </div>
           <div className="space-y-2">
              <label className="text-sm font-medium">Tags (comma separated)</label>

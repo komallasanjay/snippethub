@@ -55,7 +55,8 @@ public class SnippetService {
                 String likeQuery = "%" + query.toLowerCase() + "%";
                 Predicate titlePredicate = cb.like(cb.lower(root.get("title")), likeQuery);
                 Predicate descPredicate = cb.like(cb.lower(root.get("description")), likeQuery);
-                predicates.add(cb.or(titlePredicate, descPredicate));
+                Predicate tagPredicate = cb.like(cb.lower(root.join("tags", jakarta.persistence.criteria.JoinType.LEFT).get("name")), likeQuery);
+                predicates.add(cb.or(titlePredicate, descPredicate, tagPredicate));
             }
 
             if (language != null && !language.isEmpty()) {
@@ -191,8 +192,10 @@ public class SnippetService {
                 String likeQuery = "%" + query.toLowerCase() + "%";
                 Predicate titlePredicate = cb.like(cb.lower(root.get("title")), likeQuery);
                 Predicate descPredicate = cb.like(cb.lower(root.get("description")), likeQuery);
-                predicates.add(cb.or(titlePredicate, descPredicate));
+                Predicate tagPredicate = cb.like(cb.lower(root.join("tags", jakarta.persistence.criteria.JoinType.LEFT).get("name")), likeQuery);
+                predicates.add(cb.or(titlePredicate, descPredicate, tagPredicate));
             }
+            cq.distinct(true);
             return cb.and(predicates.toArray(new Predicate[0]));
         };
 
