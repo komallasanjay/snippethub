@@ -124,6 +124,23 @@ public class CollectionService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public PagedResponse<CollectionResponse> getPublicCollections(Pageable pageable) {
+        Page<Collection> collections = collectionRepository.findByIsPublicTrue(pageable);
+        List<CollectionResponse> content = collections.getContent().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+
+        return new PagedResponse<>(
+                content,
+                collections.getNumber(),
+                collections.getSize(),
+                collections.getTotalElements(),
+                collections.getTotalPages(),
+                collections.isLast()
+        );
+    }
+
     private CollectionResponse mapToResponse(Collection collection) {
         return CollectionResponse.builder()
                 .id(collection.getId())

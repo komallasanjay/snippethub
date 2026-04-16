@@ -31,9 +31,10 @@ public class SnippetController {
             @RequestParam(defaultValue = "desc") String direction,
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String language,
-            @RequestParam(required = false) String tags
+            @RequestParam(required = false) String tags,
+            @RequestParam(required = false) String username
     ) {
-        return ResponseEntity.ok(snippetService.getAllPublicSnippets(page, size, sort, direction, q, language, tags));
+        return ResponseEntity.ok(snippetService.getAllPublicSnippets(page, size, sort, direction, q, language, tags, username));
     }
 
     @PostMapping

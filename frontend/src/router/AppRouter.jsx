@@ -16,6 +16,7 @@ import { Profile } from '@/pages/Profile';
 import { Login } from '@/pages/auth/Login';
 import { Register } from '@/pages/auth/Register';
 import { SharedSnippet } from '@/pages/SharedSnippet';
+import { PublicProfile } from '@/pages/PublicProfile';
 
 export const AppRouter = () => {
   const { isAuthenticated } = useAuth();
@@ -29,6 +30,7 @@ export const AppRouter = () => {
       <Route element={<PageShell />}>
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
+        <Route path="/u/:username" element={<PublicProfile />} />
         
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />

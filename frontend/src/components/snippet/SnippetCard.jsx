@@ -43,11 +43,14 @@ export const SnippetCard = ({ snippet }) => {
         </div>
         
         <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div 
+             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground hover:underline transition-colors cursor-pointer"
+             onClick={(e) => { e.preventDefault(); window.location.href = `/u/${snippet.owner.username}`; }}
+          >
             <Avatar src={snippet.owner.avatarUrl} fallback={snippet.owner.username} size="sm" />
             <span>{snippet.owner.username}</span>
-            <span className="mx-1">•</span>
-            <span>{formatTimeAgo(snippet.createdAt)}</span>
+            <span className="mx-1 text-muted-foreground no-underline md:no-underline">•</span>
+            <span className="text-muted-foreground no-underline md:no-underline">{formatTimeAgo(snippet.createdAt)}</span>
           </div>
           <div className="flex items-center gap-3 text-muted-foreground text-sm">
             <div className="flex items-center gap-1"><Eye className="h-4 w-4" /> {snippet.viewCount}</div>

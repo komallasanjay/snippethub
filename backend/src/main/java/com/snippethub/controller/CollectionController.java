@@ -30,6 +30,13 @@ public class CollectionController {
         return ResponseEntity.ok(collectionService.getMyCollections(currentUser, PageRequest.of(page, size)));
     }
 
+    @GetMapping("/public")
+    public ResponseEntity<PagedResponse<CollectionResponse>> getPublicCollections(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.ok(collectionService.getPublicCollections(PageRequest.of(page, size)));
+    }
+
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CollectionResponse> createCollection(

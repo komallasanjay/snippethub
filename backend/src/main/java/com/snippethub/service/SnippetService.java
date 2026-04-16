@@ -43,7 +43,7 @@ public class SnippetService {
     private final SnippetStarRepository snippetStarRepository;
 
     @Transactional(readOnly = true)
-    public PagedResponse<SnippetSummaryResponse> getAllPublicSnippets(int page, int size, String sort, String direction, String query, String language, String tags) {
+    public PagedResponse<SnippetSummaryResponse> getAllPublicSnippets(int page, int size, String sort, String direction, String query, String language, String tags, String username) {
         Sort.Direction sortDir = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDir, sort));
 
@@ -67,6 +67,10 @@ public class SnippetService {
                 for (String t : tagArray) {
                     predicates.add(cb.equal(root.join("tags").get("name"), t.trim().toLowerCase()));
                 }
+            }
+
+            if (username != null && !username.isEmpty()) {
+                predicates.add(cb.equal(root.get("owner").get("username"), username));
             }
             
             cq.distinct(true);

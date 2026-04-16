@@ -16,6 +16,7 @@ public class CollectionResponse {
     private Long id;
     private String name;
     private String description;
+    @com.fasterxml.jackson.annotation.JsonProperty("isPublic")
     private boolean isPublic;
     private UserResponse owner;
     private Set<SnippetSummaryResponse> snippets;

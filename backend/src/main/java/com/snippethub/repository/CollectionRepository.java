@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CollectionRepository extends JpaRepository<Collection, Long> {
     Page<Collection> findByOwnerId(Long ownerId, Pageable pageable);
+    Page<Collection> findByIsPublicTrue(Pageable pageable);
 }

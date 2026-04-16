@@ -40,5 +40,17 @@ export const snippetsApi = {
   toggleStar: async (id) => {
     const response = await axiosInstance.post(`/snippets/${id}/star`);
     return response.data;
+  },
+  getShareLinks: async (id) => {
+    const response = await axiosInstance.get(`/share/snippets/${id}/links`);
+    return response.data;
+  },
+  generateShareLink: async (id, data) => {
+    const response = await axiosInstance.post(`/share/snippets/${id}/links`, data);
+    return response.data;
+  },
+  revokeShareLink: async (token) => {
+    const response = await axiosInstance.delete(`/share/links/${token}`);
+    return response.data;
   }
 };

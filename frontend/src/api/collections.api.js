@@ -5,6 +5,10 @@ export const collectionsApi = {
     const response = await axiosInstance.get('/collections/my', { params });
     return response.data;
   },
+  getPublicCollections: async (params) => {
+    const response = await axiosInstance.get('/collections/public', { params });
+    return response.data;
+  },
   getById: async (id) => {
     const response = await axiosInstance.get(`/collections/${id}`);
     return response.data;

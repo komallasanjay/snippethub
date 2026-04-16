@@ -10,5 +10,6 @@ public class CreateCollectionRequest {
     @NotBlank(message = "Name is required")
     private String name;
     private String description;
+    @com.fasterxml.jackson.annotation.JsonProperty("isPublic")
     private boolean isPublic = false;
 }

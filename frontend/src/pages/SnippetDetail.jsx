@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { snippetsApi } from '@/api/snippets.api';
 import { collectionsApi } from '@/api/collections.api';
 import { SnippetEditor } from '@/components/snippet/SnippetEditor';
+import { ShareLinkModal } from '@/components/snippet/ShareLinkModal';
 import { CommentThread } from '@/components/comment/CommentThread';
 import { Loader } from '@/components/shared/Loader';
 import { Badge } from '@/components/ui/Badge';
@@ -21,6 +22,7 @@ export const SnippetDetail = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showCollections, setShowCollections] = React.useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const { data: cols } = useQuery({ 
     queryKey: ['collections', 'my'], 
@@ -75,12 +77,6 @@ export const SnippetDetail = () => {
     }
   });
 
-  const handleShare = () => {
-    const url = window.location.origin + `/snippets/${id}`;
-    navigator.clipboard.writeText(url);
-    toast.success('Share link copied to clipboard!');
-  };
-
   if (isLoading) return <Loader size="xl" />;
   if (isError || !snippet) return <div className="text-center py-12">Snippet not found or access denied.</div>;
 
@@ -98,8 +94,10 @@ export const SnippetDetail = () => {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{snippet.title}</h1>
           <div className="flex items-center gap-3 mt-4 text-muted-foreground text-sm">
-            <Avatar src={snippet.owner.avatarUrl} fallback={snippet.owner.username} size="sm" />
-            <span className="font-medium text-foreground">{snippet.owner.username}</span>
+            <Link to={`/u/${snippet.owner.username}`} className="flex items-center gap-2 hover:text-foreground hover:underline transition-colors shrink-0">
+               <Avatar src={snippet.owner.avatarUrl} fallback={snippet.owner.username} size="sm" />
+               <span className="font-medium text-foreground hover:underline">{snippet.owner.username}</span>
+            </Link>
             <span>•</span>
             <span>{formatTimeAgo(snippet.createdAt)}</span>
             <span>•</span>
@@ -141,9 +139,11 @@ export const SnippetDetail = () => {
           <Button variant="outline" size="sm" onClick={() => starMutation.mutate()}>
             <Star className={cn("h-4 w-4 mr-2", isStarred && "fill-yellow-500 text-yellow-500")} /> Star
           </Button>
-          <Button variant="outline" size="sm" onClick={handleShare}>
-            <Share2 className="h-4 w-4 mr-2" /> Share
-          </Button>
+          {isOwner && (
+            <Button variant="outline" size="sm" onClick={() => setIsShareModalOpen(true)}>
+              <Share2 className="h-4 w-4 mr-2" /> Share
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={() => copyMutation.mutate()}>
             <Copy className="h-4 w-4 mr-2" /> Copy Code
           </Button>
@@ -172,6 +172,8 @@ export const SnippetDetail = () => {
       )}
 
       <CommentThread snippetId={id} />
+
+      {isShareModalOpen && <ShareLinkModal snippetId={id} onClose={() => setIsShareModalOpen(false)} />}
     </div>
   );
 };
