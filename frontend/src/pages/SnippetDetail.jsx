@@ -39,7 +39,8 @@ export const SnippetDetail = () => {
 
   const { data: snippet, isLoading, isError } = useQuery({
     queryKey: ['snippet', id],
-    queryFn: () => snippetsApi.getById(id)
+    queryFn: () => snippetsApi.getById(id),
+    refetchOnWindowFocus: false
   });
 
   const { data: starredSnippets, refetch: refetchStarred } = useQuery({
@@ -65,7 +66,10 @@ export const SnippetDetail = () => {
       if (snippet) {
          navigator.clipboard.writeText(snippet.code);
          toast.success('Code copied to clipboard!');
-         queryClient.invalidateQueries(['snippet', id]);
+         queryClient.setQueryData(['snippet', id], old => {
+           if (!old) return old;
+           return { ...old, copyCount: old.copyCount + 1 };
+         });
       }
     }
   });
@@ -73,7 +77,14 @@ export const SnippetDetail = () => {
   const starMutation = useMutation({
     mutationFn: () => snippetsApi.toggleStar(id),
     onSuccess: () => {
-      queryClient.invalidateQueries(['snippet', id]);
+      queryClient.setQueryData(['snippet', id], old => {
+        if (!old) return old;
+        return {
+          ...old,
+          starCount: isStarred ? Math.max(0, old.starCount - 1) : old.starCount + 1
+        };
+      });
+      refetchStarred();
     }
   });
 
