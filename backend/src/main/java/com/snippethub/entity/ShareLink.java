@@ -29,11 +29,6 @@ public class ShareLink {
     @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 
-    @Column(name = "max_views")
-    private Integer maxViews;
-
-    @Column(name = "view_count", columnDefinition = "INT DEFAULT 0")
-    private Integer viewCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")

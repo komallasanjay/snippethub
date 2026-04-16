@@ -15,7 +15,5 @@ public class ShareLinkResponse {
     private String token;
     private Long snippetId;
     private LocalDateTime expiresAt;
-    private Integer maxViews;
-    private Integer viewCount;
     private LocalDateTime createdAt;
 }

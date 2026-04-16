@@ -9,5 +9,4 @@ import java.time.LocalDateTime;
 @Setter
 public class ShareLinkRequest {
     private LocalDateTime expiresAt;
-    private Integer maxViews;
 }

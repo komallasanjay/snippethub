@@ -48,7 +48,6 @@ public class AuthService {
                 .email(user.getEmail())
                 .bio(user.getBio())
                 .avatarUrl(user.getAvatarUrl())
-                .role(user.getRole())
                 .build();
 
         return AuthResponse.builder()
@@ -72,8 +71,6 @@ public class AuthService {
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
                 .passwordHash(passwordEncoder.encode(signUpRequest.getPassword()))
-                .role("USER")
-                .isVerified(false)
                 .build();
 
         userRepository.save(user);
@@ -101,7 +98,6 @@ public class AuthService {
                 .email(user.getEmail())
                 .bio(user.getBio())
                 .avatarUrl(user.getAvatarUrl())
-                .role(user.getRole())
                 .build();
                 
              return AuthResponse.builder()

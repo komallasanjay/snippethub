@@ -34,11 +34,6 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "is_verified")
-    private boolean isVerified;
-
-    @Column(length = 20)
-    private String role; // "USER" or "ADMIN"
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

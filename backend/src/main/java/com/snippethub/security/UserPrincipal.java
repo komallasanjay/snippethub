@@ -20,7 +20,7 @@ public class UserPrincipal implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserPrincipal create(User user) {
-        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
         return new UserPrincipal(
                 user.getId(),
                 user.getUsername(),

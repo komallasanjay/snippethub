@@ -44,8 +44,6 @@ public class ShareService {
         ShareLink shareLink = ShareLink.builder()
                 .snippet(snippet)
                 .expiresAt(request.getExpiresAt())
-                .maxViews(request.getMaxViews())
-                .viewCount(0)
                 .createdBy(owner)
                 .build();
 
@@ -62,13 +60,7 @@ public class ShareService {
             throw new ResourceNotFoundException("Share link has expired");
         }
 
-        if (shareLink.getMaxViews() != null && shareLink.getViewCount() >= shareLink.getMaxViews()) {
-            throw new ResourceNotFoundException("Share link has reached its view limit");
-        }
 
-        shareLink.setViewCount(shareLink.getViewCount() + 1);
-        shareLinkRepository.save(shareLink);
-        
         Snippet snippet = shareLink.getSnippet();
         snippet.setViewCount(snippet.getViewCount() + 1);
         snippetRepository.save(snippet);
@@ -107,8 +99,6 @@ public class ShareService {
                 .token(shareLink.getToken())
                 .snippetId(shareLink.getSnippet().getId())
                 .expiresAt(shareLink.getExpiresAt())
-                .maxViews(shareLink.getMaxViews())
-                .viewCount(shareLink.getViewCount())
                 .createdAt(shareLink.getCreatedAt())
                 .build();
     }
