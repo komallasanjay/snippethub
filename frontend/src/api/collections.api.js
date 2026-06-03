@@ -21,6 +21,10 @@ export const collectionsApi = {
     const response = await axiosInstance.delete(`/collections/${id}`);
     return response.data;
   },
+  update: async (id, data) => {
+    const response = await axiosInstance.put(`/collections/${id}`, data);
+    return response.data;
+  },
   addSnippet: async (collectionId, snippetId) => {
     const response = await axiosInstance.post(`/collections/${collectionId}/snippets/${snippetId}`);
     return response.data;

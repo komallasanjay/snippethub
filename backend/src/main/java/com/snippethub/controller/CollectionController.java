@@ -1,6 +1,7 @@
 package com.snippethub.controller;
 
 import com.snippethub.dto.request.CreateCollectionRequest;
+import com.snippethub.dto.request.UpdateCollectionRequest;
 import com.snippethub.dto.response.CollectionResponse;
 import com.snippethub.dto.response.PagedResponse;
 import com.snippethub.security.UserPrincipal;
@@ -50,6 +51,15 @@ public class CollectionController {
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal currentUser) {
         return ResponseEntity.ok(collectionService.getCollectionById(id, currentUser));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CollectionResponse> updateCollection(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateCollectionRequest request,
+            @AuthenticationPrincipal UserPrincipal currentUser) {
+        return ResponseEntity.ok(collectionService.updateCollection(id, request, currentUser));
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.snippethub.service;
 
 import com.snippethub.dto.request.CreateCollectionRequest;
+import com.snippethub.dto.request.UpdateCollectionRequest;
 import com.snippethub.dto.response.CollectionResponse;
 import com.snippethub.dto.response.PagedResponse;
 import com.snippethub.entity.Collection;
@@ -59,6 +60,22 @@ public class CollectionService {
                 throw new UnauthorizedException("You do not have permission to view this collection");
             }
         }
+        return mapToResponse(collection);
+    }
+
+    @Transactional
+    public CollectionResponse updateCollection(Long id, UpdateCollectionRequest request, UserPrincipal currentUser) {
+        Collection collection = collectionRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Collection not found")
+        );
+        if (!collection.getOwner().getId().equals(currentUser.getId())) {
+            throw new UnauthorizedException("You are not the owner of this collection");
+        }
+        collection.setName(request.getName());
+        collection.setDescription(request.getDescription());
+        collection.setPublic(request.isPublic());
+
+        collection = collectionRepository.save(collection);
         return mapToResponse(collection);
     }
 

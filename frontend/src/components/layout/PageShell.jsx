@@ -15,18 +15,21 @@ export const PageShell = () => {
         </main>
       </div>
       <footer className="py-6 md:px-8 md:py-0 border-t">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row mx-auto px-4">
-          <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
+        <div className="container flex flex-col md:flex-row items-center justify-between gap-4 md:h-16 mx-auto px-4">
+          <p className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} SnippetHub
+          </p>
+          <p className="text-sm text-muted-foreground">
             Built for developers. Monochrome strict aesthetics.
           </p>
         </div>
       </footer>
-      <Toaster 
-        position="bottom-right" 
-        toastOptions={{ 
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
           className: 'bg-card text-card-foreground border border-border font-sans text-sm',
           style: { borderRadius: '6px', background: 'var(--card)', color: 'var(--card-foreground)', border: '1px solid var(--border)' }
-        }} 
+        }}
       />
     </div>
   );

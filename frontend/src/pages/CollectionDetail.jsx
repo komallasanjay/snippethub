@@ -5,17 +5,59 @@ import { collectionsApi } from '@/api/collections.api';
 import { SnippetCard } from '@/components/snippet/SnippetCard';
 import { Loader } from '@/components/shared/Loader';
 import { Button } from '@/components/ui/Button';
-import { ArrowLeft, Trash } from 'lucide-react';
+import { Modal } from '@/components/ui/Modal';
+import { Input } from '@/components/ui/Input';
+import { useAuth } from '@/contexts/AuthContext';
+import { ArrowLeft, Trash, Edit } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const CollectionDetail = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editName, setEditName] = React.useState('');
+  const [editDescription, setEditDescription] = React.useState('');
+  const [editIsPublic, setEditIsPublic] = React.useState(false);
 
   const { data: collection, isLoading, isError } = useQuery({
     queryKey: ['collection', id],
     queryFn: () => collectionsApi.getById(id),
+  });
+
+  React.useEffect(() => {
+    if (collection) {
+      setEditName(collection.name);
+      setEditDescription(collection.description || '');
+      setEditIsPublic(collection.isPublic);
+    }
+  }, [collection]);
+
+  const updateMutation = useMutation({
+    mutationFn: (updatedCol) => collectionsApi.update(id, updatedCol),
+    onSuccess: () => {
+      toast.success('Collection updated');
+      queryClient.invalidateQueries(['collection', id]);
+      queryClient.invalidateQueries(['collections']);
+      setIsEditing(false);
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to update collection');
+    }
+  });
+
+  const deleteCollectionMutation = useMutation({
+    mutationFn: () => collectionsApi.delete(id),
+    onSuccess: () => {
+      toast.success('Collection deleted');
+      queryClient.invalidateQueries(['collections']);
+      navigate('/collections');
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to delete collection');
+    }
   });
 
   const removeSnippetMutation = useMutation({
@@ -28,6 +70,14 @@ export const CollectionDetail = () => {
 
   if (isLoading) return <Loader size="xl" />;
   if (isError || !collection) return <div className="text-center py-12">Collection not found or access denied.</div>;
+
+  const isOwner = user && collection.owner && user.id === collection.owner.id;
+
+  const handleUpdateSubmit = (e) => {
+    e.preventDefault();
+    if (!editName) return;
+    updateMutation.mutate({ name: editName, description: editDescription, isPublic: editIsPublic });
+  };
 
   return (
     <div className="space-y-6">
@@ -42,6 +92,20 @@ export const CollectionDetail = () => {
           <h1 className="text-3xl font-bold tracking-tight">{collection.name}</h1>
           <p className="mt-2 text-muted-foreground">{collection.description}</p>
         </div>
+        {isOwner && (
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+              <Edit className="h-4 w-4 mr-2" /> Edit
+            </Button>
+            <Button variant="destructive" size="sm" onClick={() => {
+              if (window.confirm("Are you sure you want to delete this collection?")) {
+                deleteCollectionMutation.mutate();
+              }
+            }}>
+              <Trash className="h-4 w-4 mr-2" /> Delete
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="mt-8">
@@ -56,26 +120,64 @@ export const CollectionDetail = () => {
             {collection.snippets.map(snippet => (
               <div key={snippet.id} className="relative group">
                 <SnippetCard snippet={snippet} />
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button 
-                    variant="destructive"
-                    size="sm"
-                    className="h-8 px-2 shadow-sm"
-                    onClick={() => {
-                      if (window.confirm("Are you sure you want to remove this snippet from the collection?")) {
-                        removeSnippetMutation.mutate(snippet.id);
-                      }
-                    }}
-                    title="Remove from collection"
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
-                </div>
+                {isOwner && (
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button 
+                      variant="destructive"
+                      size="sm"
+                      className="h-8 px-2 shadow-sm"
+                      onClick={() => {
+                        if (window.confirm("Are you sure you want to remove this snippet from the collection?")) {
+                          removeSnippetMutation.mutate(snippet.id);
+                        }
+                      }}
+                      title="Remove from collection"
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {isOwner && (
+        <Modal isOpen={isEditing} onClose={() => setIsEditing(false)} title="Edit Collection">
+          <form onSubmit={handleUpdateSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Name</label>
+              <Input
+                placeholder="Collection Name"
+                value={editName}
+                onChange={e => setEditName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Description</label>
+              <Input
+                placeholder="Description (optional)"
+                value={editDescription}
+                onChange={e => setEditDescription(e.target.value)}
+              />
+            </div>
+            <label className="flex items-center gap-2 pt-2">
+              <input
+                type="checkbox"
+                checked={editIsPublic}
+                onChange={e => setEditIsPublic(e.target.checked)}
+              />
+              <span className="text-sm">Public collection</span>
+            </label>
+            <div className="flex justify-end gap-3 pt-4">
+              <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
+              <Button type="submit" disabled={updateMutation.isLoading}>Save Changes</Button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 };
