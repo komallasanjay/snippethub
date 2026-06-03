@@ -8,3 +8,20 @@
 # System Files
 .DS_Store
 Thumbs.db
+
+# Project Info
+project_diagrams.md
+project_dossier.md
+DEPLOYMENT.md
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependency and build directories
+node_modules/
+dist/
+target/
+*.log
+*.class
