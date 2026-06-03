@@ -2,6 +2,8 @@ package com.snippethub.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,6 +30,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<?> unauthorizedException(UnauthorizedException ex, WebRequest request) {
         return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> badCredentialsException(BadCredentialsException ex, WebRequest request) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid username/email or password", request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> accessDeniedException(AccessDeniedException ex, WebRequest request) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, "Access Denied: You do not have permission to perform this action", request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

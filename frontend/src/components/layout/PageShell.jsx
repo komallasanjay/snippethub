@@ -2,7 +2,6 @@ import React from 'react';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { Outlet } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
 
 export const PageShell = () => {
   return (
@@ -24,13 +23,6 @@ export const PageShell = () => {
           </p>
         </div>
       </footer>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          className: 'bg-card text-card-foreground border border-border font-sans text-sm',
-          style: { borderRadius: '6px', background: 'var(--card)', color: 'var(--card-foreground)', border: '1px solid var(--border)' }
-        }}
-      />
     </div>
   );
 };
